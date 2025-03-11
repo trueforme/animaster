@@ -1,7 +1,7 @@
 addListeners();
 
 let heartBeatAnimation = null;
-
+let moveAndHideAnimation = null;
 function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
@@ -48,7 +48,14 @@ function addListeners() {
     document.getElementById('moveAndHide')
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
-            animaster().moveAndHide(block, 5000);
+            moveAndHideAnimation = animaster().moveAndHide(block, 5000);
+        });
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            if (moveAndHideAnimation && moveAndHideAnimation.reset) {
+                moveAndHideAnimation.reset();
+            }
         });
 
     document.getElementById('showAndHidePlay')
@@ -108,7 +115,7 @@ function animaster() {
 
     function moveAndHide(element, duration) {
         move(element, 2 / 5 * duration, {x: 100, y: 20});
-        setTimeout(fadeOut, duration * 2 / 5, element, duration * 3 / 5);
+        let Gitler = setTimeout(fadeOut, duration * 2 / 5, element, duration * 3 / 5);
     }
 
     function showAndHide(element, duration) {
@@ -128,25 +135,31 @@ function animaster() {
     }
 
     function resetFadeIn(element) {
-        // Сбрасываем стили, заданные fadeIn
         element.style.transitionDuration = null;
-        // Возвращаем исходное состояние классов: убираем 'show', добавляем 'hide'
         element.classList.remove('show');
         element.classList.add('hide');
     }
 
     function resetFadeOut(element) {
-        // Сбрасываем стили, заданные fadeOut
         element.style.transitionDuration = null;
-        // Возвращаем исходное состояние классов: убираем 'hide', добавляем 'show'
         element.classList.remove('hide');
         element.classList.add('show');
     }
 
     function resetMoveAndScale(element) {
-        // Сбрасываем все inline-стили, установленные методами move и scale
         element.style.transitionDuration = null;
         element.style.transform = null;
+    }
+    function moveAndHide(element, duration) {
+        move(element, duration * 2/5, {x: 100, y: 20});
+        const timerId = setTimeout(() => fadeOut(element, duration * 3/5), duration * 2/5);
+        return {
+            reset: () => {
+                clearTimeout(timerId);
+                resetMoveAndScale(element);
+                resetFadeOut(element);
+            }
+        };
     }
 
     return {
