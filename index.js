@@ -124,10 +124,15 @@ function animaster() {
     }
 
     function heartBeating(element){
-        for (let i = 0; i <= 100000; i += 2){
+        /*for (let i = 0; i <= 100000; i += 2){
             setTimeout(scale, i * 500, element, 500, 7 / 5);
             setTimeout(scale, (i + 1) * 500, element, 500, 5 / 7);
         }
+        */
+        setInterval(() => {
+            scale(element, 500, 1.4);
+            setTimeout(() => scale(element, 500, 5 / 7), 500);
+        }, 1000);
     }
 
     return {
